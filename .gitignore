@@ -482,3 +482,9 @@ $RECYCLE.BIN/
 *.swp
 *.LOCAL
 *.pub
+sanityeclipse000
+#LOCAL COLLECTOR DB FILES
+**/data/
+*.db
+*.db-shm
+*.db-wal
