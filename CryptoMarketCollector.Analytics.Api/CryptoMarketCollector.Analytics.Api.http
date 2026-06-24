@@ -1,0 +1,6 @@
+@CryptoMarketCollector.Analytics.Api_HostAddress = http://localhost:5245
+
+GET {{CryptoMarketCollector.Analytics.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
