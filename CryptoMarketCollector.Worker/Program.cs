@@ -19,7 +19,8 @@ builder.Services.Configure<CollectorOptions>(
 builder.Services.AddHttpClient();
 
 builder.Services.AddSingleton<IMarketDataSource, DemoMarketDataSource>();
-builder.Services.AddSingleton<IMarketSnapshotSink, ConsoleMarketSnapshotSink>();
+//builder.Services.AddSingleton<IMarketSnapshotSink, ConsoleMarketSnapshotSink>();
+builder.Services.AddSingleton<IMarketSnapshotSink, SqliteMarketSnapshotSink>();
 
 builder.Services.AddHostedService<Worker>();
 
