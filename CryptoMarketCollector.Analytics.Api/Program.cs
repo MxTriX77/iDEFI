@@ -7,6 +7,7 @@ builder.Services.Configure<AnalyticsOptions>(
     builder.Configuration.GetSection("Analytics"));
 
 builder.Services.AddSingleton<MarketAnalyticsService>();
+builder.Services.AddSingleton<DecisionSuggestionService>();
 
 builder.Services.AddCors(options =>
 {
@@ -33,6 +34,17 @@ app.MapGet(
     {
         return Results.Ok(
             await analyticsService.GetOverviewAsync(cancellationToken));
+    });
+
+
+app.MapGet(
+    "/api/analytics/decision-suggestions",
+    async (
+        DecisionSuggestionService decisionSuggestionService,
+        CancellationToken cancellationToken) =>
+    {
+        return Results.Ok(
+            await decisionSuggestionService.GetSuggestionsAsync(cancellationToken));
     });
 
 app.Run();
