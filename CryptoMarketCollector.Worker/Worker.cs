@@ -26,6 +26,7 @@ public sealed class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
     private readonly IEnumerable<IMarketDataSource> _sources;
+    private readonly IEnumerable<IKlineCollectionService> _klineCollectors;
     private readonly IMarketSnapshotSink _sink;
     private readonly CollectorOptions _options;
     private readonly IHostApplicationLifetime _hostApplicationLifetime;
@@ -33,12 +34,14 @@ public sealed class Worker : BackgroundService
     public Worker(
         ILogger<Worker> logger,
         IEnumerable<IMarketDataSource> sources,
+        IEnumerable<IKlineCollectionService> klineCollectors,
         IMarketSnapshotSink sink,
         IOptions<CollectorOptions> options,
         IHostApplicationLifetime hostApplicationLifetime)
     {
         _logger = logger;
         _sources = sources;
+        _klineCollectors = klineCollectors;
         _sink = sink;
         _options = options.Value;
         _hostApplicationLifetime = hostApplicationLifetime;
@@ -103,6 +106,25 @@ public sealed class Worker : BackgroundService
                     ex,
                     "Failed to capture market snapshots from {Source}.",
                     source.Name);
+            }
+        }
+
+        foreach (IKlineCollectionService collector in _klineCollectors)
+        {
+            try
+            {
+                await collector.CaptureAsync(cancellationToken);
+
+                _logger.LogInformation(
+                    "Completed kline collector {Collector}.",
+                    collector.Name);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Failed to run kline collector {Collector}.",
+                    collector.Name);
             }
         }
     }
